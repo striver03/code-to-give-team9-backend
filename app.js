@@ -6,7 +6,9 @@ const app = express();
 app.use(express.json());
 
 const crudRouter = require('./routes/crud');
+const gptRouter = require('./routes/gpt');
 app.use('/',crudRouter);
+app.use('/gpt',gptRouter);
 
 const port = process.env.PORT || 3000;
 
