@@ -1,7 +1,7 @@
 const db = require("../db/connect");
 const { FormDoesNotExistError } = require("./errors/form");
 
-/**
+/*
 Model for the form object
 */
 class Form {
@@ -12,7 +12,6 @@ class Form {
   @property {string} name - The name of the form
   @property {string} createdBy - The user who created the form
   @property {string} id - The id of the form
-
   @param {Form} form - The form object
   */
   constructor({ name, createdBy, id = null }) {
