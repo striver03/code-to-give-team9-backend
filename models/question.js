@@ -1,4 +1,3 @@
-
 /**
 Abstract class for a question.
 
@@ -6,10 +5,11 @@ Abstract class for a question.
 @class Question
 */
 class Question {
-
   constructor() {
     if (this.constructor === Question) {
-      throw new TypeError('Abstract class "Question" cannot be instantiated directly.');
+      throw new TypeError(
+        'Abstract class "Question" cannot be instantiated directly.'
+      );
     }
   }
 
@@ -19,7 +19,7 @@ class Question {
   # Example
   for a text question, this method would return {text: `<some-text>`, maxLength: `<some-number>`}
   */
-  getParameters() { }
+  getParameters() {}
 }
 
 /**
@@ -52,7 +52,7 @@ class TextQuestion extends Question {
   @returns {TextQuestionParameters} The parameters of the question
   */
   getParameters() {
-    return { type: 'text', text: this.text, maxLength: this.maxLength };
+    return { type: "text", text: this.text, maxLength: this.maxLength };
   }
 }
 
@@ -63,7 +63,6 @@ A MCQ question.
 
 */
 class OptionQuestion extends Question {
-
   /**
   Constructor for the text question
   @param {string} text - The text of the question
@@ -84,9 +83,37 @@ class OptionQuestion extends Question {
   @returns {OptionQuestionParameters} The parameters of the question
   */
   getParameters() {
-    return { type: 'option', text: 'text', options: this.options };
+    return { type: "option", text: "text", options: this.options };
+  }
+}
+
+class RangeQuestion extends Question {
+  /**
+   * @param {number} min - The minimum value of the range
+   * @param {number} max - The maximum value of the range
+   * @param {string} text - The text of the question
+   */
+  constructor(min, max, text) {
+    if (min > max) {
+      throw new Error("Min cannot be greater than max");
+    }
+
+    this.min = min;
+    this.max = max;
+    this.text = text;
   }
 
+  /**
+   *  @typedef {Object} RangeQuestionParameters
+   *    @property {string} type - The type of the question
+   *    @property {string} text - The text of the question
+   *    @property {number} min - The minimum value of the range
+   *
+   * @returns {RangeQuestionParameters} The parameters of the question
+   */
+  getParameters() {
+    return { type: "range", text: this.text, min: this.min, max: this.max };
+  }
 }
 
 module.exports = { TextQuestion, OptionQuestion };
