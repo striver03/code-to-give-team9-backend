@@ -28,7 +28,6 @@ const getUserData = async (req,res) => {
 const addUserData = async (req,res) => {
     try {
         await userCollection.add(req.body);
-        console.log({name: req.body.name});
         res.status(200).json({msg: 'Success Add User Data!'});
     } catch (error) {
         console.log(error);
@@ -64,5 +63,5 @@ module.exports = {
     getUserData,
     addUserData,
     updateUserData,
-    deleteUserData,
+    deleteUserData
 };
