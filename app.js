@@ -8,9 +8,10 @@ app.use(express.json());
 // const crudRouter = require('./routes/crud');
 const gptRouter = require('./routes/gpt');
 const formRouter = require("./routes/form");
-// app.use('/',crudRouter);
-app.use('/gpt',gptRouter);
 app.use("/form", formRouter);
+// app.use('/', crudRouter);
+app.use('/question', questionRouter);
+app.use('/submit',submitRouter);
 
 const port = process.env.PORT || 3000;
 
@@ -22,8 +23,3 @@ const start = () => {
   }
 };
 start();
-
-// Collections:
-// 1. users (the complete data of each user)
-//     docs -
-// 2. age bracket - (below 18, 18-20, 21-23, 24+ {these will be the documents of the collection})
