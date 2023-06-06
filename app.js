@@ -5,8 +5,11 @@ const app = express();
 // Middleware
 app.use(express.json());
 
-const crudRouter = require('./routes/crud');
-app.use('/',crudRouter);
+// const crudRouter = require('./routes/crud');
+// app.use('/',crudRouter);
+
+const questionRouter = require('./routes/questionnaire');
+app.use('/',questionRouter);
 
 const port = process.env.PORT || 3000;
 
@@ -18,9 +21,3 @@ const start = () => {
     }
 };
 start();
-
-// Collections:
-// 1. users (the complete data of each user)
-//     docs - 
-// 2. age bracket - (below 18, 18-20, 21-23, 24+ {these will be the documents of the collection})
-   

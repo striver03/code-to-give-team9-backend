@@ -6,7 +6,7 @@ const {
     getUserData,
     addUserData,
     updateUserData,
-    deleteUserData
+    deleteUserData,
 } = require('../controllers/crud_functions');
 
 router.route('/').get(getAllUsersData);
