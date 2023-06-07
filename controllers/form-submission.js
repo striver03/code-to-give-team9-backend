@@ -42,7 +42,10 @@ const submitResponse = async (req,res) => {
         const submissionID = readFileSync('./local/submissionID.txt','utf-8');
         for (const key in response) {
             const value = response[key];
-            formSubmissionCollection.doc(submissionID).set({key,value}, {merge: true});
+            console.log(key,value);
+            const data = {};
+            data[key] = value;
+            formSubmissionCollection.doc(submissionID).update(data, {merge: true});
         }
         await formSubmissionCollection.doc(submissionID).set({form: docRef}, {merge: true});
         res.status(200).json({msg: "Success Submission!"});
