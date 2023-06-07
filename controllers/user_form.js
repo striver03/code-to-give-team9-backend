@@ -20,7 +20,6 @@ const addUserResponse = async (req,res) => {
         const submissionID = readFileSync('./local/submissionID.txt','utf-8');
         await formSubmissionCollection.doc(submissionID).set({key: value}, {merge: true});
         await formSubmissionCollection.doc(submissionID).set({form: docRef}, {merge: true});
-
         res.send("Submission Success!");
     } catch (error) {
         console.log(error);
