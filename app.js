@@ -1,17 +1,14 @@
-// Initial setup
 const express = require("express");
 const app = express();
 
-// Middleware
 app.use(express.json());
 
-// const crudRouter = require('./routes/crud');
 const gptRouter = require('./routes/gpt');
 const formRouter = require("./routes/form");
 const questionRouter = require("./routes/question");
-const submitRouter = require("./routes/user_form");
+const submitRouter = require("./routes/form-submission");
+
 app.use("/form", formRouter);
-// app.use('/', crudRouter);
 app.use('/question', questionRouter);
 app.use('/submit',submitRouter);
 app.use('/gpt',gptRouter);

@@ -1,56 +1,39 @@
 const {writeFileSync} = require('fs')
 
-const { FormDao, Form } = require("../models/form");
-const { FormDoesNotExistError } = require("../models/errors/form");
+const db = require('../db/connect');
+const { start } = require('repl');
+const formCollection = db.collection('forms');
 
-const getForm = (req, res, _next) => {
-    const { id } = req.query;
+const getForm = async (req, res) => {
+    const {formID} = req.query;
+    const snapshot = await formCollection.doc(formID).get();
+    const startPath = snapshot.data().start;
+    console.log(startPath);
 
-    if (id == undefined) {
-        res.status(400).json({
-        error: "Missing form id",
-        });
-        return;
+    if (!formID) {
+        return res.status(400).json({error: 'Missing formID'});
     }
 
-    FormDao.getForm(id)
-        .then((form) => {
-        res.json(form.json());
-        })
-        .catch((err) => {
-        if (err instanceof FormDoesNotExistError) {
-            res.status(404).json({
-            error: "Form does not exist",
-            });
-        }
-    });
+    formCollection.doc(formID).collection('questions')
+    .get()
+    .then((querySnapshot) => {
+        const docs = querySnapshot.docs.map(doc => doc.data());
+        res.status(200).json({docs,startPath});
+      });
 };
 
-const createForm = (req, res, _next) => {
-    const { name, createdBy } = req.body;
+const createForm = async (req, res) => {
+    const { formName, createdBy} = req.body;
 
-    try {
-      const form = new Form({
-        name: name,
-        createdBy: createdBy,
-      });
-
-      FormDao.createForm(form)
-        .then((form) => {
-          writeFileSync('./local/formID.txt', form.id);
-          res.json(form.json());
-        })
-        .catch((_err) => {
-          console.log(_err);
-          res.status(500).json({
-            error: "Failed to create form",
-          });
-        });
-    } catch (err) {
-      res.status(400).json({
-        error: err.message,
-      });
+    if (!formName || !createdBy) {
+      return res.status(400).json({error: 'Something is missing!'});
     }
+
+    const docRef = await formCollection.add({ createdBy: createdBy, formName: formName});
+    const formID = docRef.id;
+    writeFileSync('./local/formID.txt', formID);
+
+    res.status(200).json({msg: `Form created with ID: ${formID}`});
   }
 
 module.exports = {getForm, createForm};

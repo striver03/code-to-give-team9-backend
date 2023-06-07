@@ -4,7 +4,7 @@ const router = express.Router();
 const {getForm, createForm} = require('../controllers/form');
 
 router
-  .route("/")
+  .route('/')
   .get(getForm)
   .post(createForm);
 
