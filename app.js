@@ -6,13 +6,15 @@ const app = express();
 app.use(express.json());
 
 // const crudRouter = require('./routes/crud');
+const gptRouter = require('./routes/gpt');
 const formRouter = require("./routes/form");
-const questionRouter = require('./routes/question');
-const submitRouter = require('./routes/user_form');
+const questionRouter = require("./routes/question");
+const submitRouter = require("./routes/user_form");
 app.use("/form", formRouter);
 // app.use('/', crudRouter);
 app.use('/question', questionRouter);
 app.use('/submit',submitRouter);
+app.use('/gpt',gptRouter);
 
 const port = process.env.PORT || 3000;
 

@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
-const getInfo = require('../controllers/gpt');
+const {getnextQues,storeBaseInfo} = require('../controllers/gpt');
 
-router.route('/').post(getInfo);
+router.route('/base').post(storeBaseInfo);
+router.route('/nxt').post(getnextQues);
+// router.route('/').get(getnextQues);
 module.exports = router;
