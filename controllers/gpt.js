@@ -7,12 +7,11 @@ const openai = new OpenAIApi(configuration);
 // const { baseQuestion, formQuestions } = require("../testing/data");
 let history = [];
 
-// let index = 1;
-// console.log(JSON.stringify(baseQuestion));
 
-//current question submit -> current question res,type or next question
 const getnextQues = async (req, res) => {
-  let {text,type,options,maxScale,minScale,PrevResponse,PrevType} = req.body; //current question or response
+  let {text,type,options,maxScale,minScale,PrevResponse,PrevType} = req.body;
+  //In the body we will get the current question (which tht gpt will change) and the response of the previous question
+
   let curr = {text,type};
   if(type ==='slider')
   {
@@ -37,13 +36,13 @@ const getnextQues = async (req, res) => {
 
   let prevRes = {type:PrevType,response:PrevResponse};
   
+  //Adding the prompt to add the previous question's reponse
   let p = `I'm giving you the response of the user of the previous question. Analyze and store it in your memory and use that to make the questions more personalized for the user. Gather some information around the question and it's response to analyze the behavior of user which can then help to modify the question statement as close to user's mindset as possible. The response in JSON format is -${JSON.stringify(prevRes)}`;
 
   history.push({"role":"user","content": p});
 
 
   let prompt = getQuesPrompt(curr);
-  // if (typeof prompt === "string") {
     history.push({
       role: "user",
       content: prompt,
@@ -56,23 +55,12 @@ const getnextQues = async (req, res) => {
         // temperature: 0.2,
         // max_tokens:1000,
       });
-  
-      // let finalNextQuestion = curr;
-      // finalNextQuestion.text = resp.data.choices[0].message.content;
-      // history.push(resp.data.choices[0].message);
-      // history.push({"role":"assistant","content":finalNextQuestion});
-      
-      // res.status(200).json({ text: resp.data.choices[0].message.content});
       let newQues = JSON.parse(resp.data.choices[0].message.content);
       res.status(200).json({modifiedQues:newQues.text});
       
     } catch (error) {
       res.send(error);
     }
-
-  // } else {
-  //   res.status(200).json({ text: "Invalid prompt provided." }); //error (will create custom error class too)
-  // }
 };
 
 
@@ -112,7 +100,6 @@ const storeBaseInfo = async (req, res) => {
   }
 ];
   */
-  //inside this call the getPromptBase and this will run when base questions have been asked
   history.push(...getPromptBase(baseQues));
   res.status(200).json({success:true,msg:"Base Questions, along with their responses has been acquired"})
 };
@@ -123,8 +110,7 @@ const getPromptBase = (baseQuestion) => {
   
     let prompt2 = `In the upcoming questions that I'll ask, use the data about the user you've collected so far and try to put it in the question to modify and align it to the user's mindset as close as possible. For example - If you know the stress level of the user from the responses you get by going through the questions, and the next question asked is - have you been offered drugs by your peers, then try to integrate the stress level into this question as respond something like - Based on your higher stress level, have you ever been offered drugs by your peers? This information will help us know your social circle better.
     So just remember this type of pattern everytime you modify/personalize the question.`
-    
-    // console.log(prompt1,prompt2);
+  
     return [{"role":"user","content":prompt1},{"role":"user","content":prompt2}];
 };
 
