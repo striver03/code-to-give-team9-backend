@@ -58,7 +58,7 @@ const createQuestion = async (req,res) => {
         if (!minLength || !maxLength) {
             return res.status(404).json({error: 'Limits not defined!'});
         }
-        await questionCollection.doc(questionID).set({id: questionID, type: type, key: key, text: text, required: required});
+        await questionCollection.doc(questionID).set({id: questionID, type: type, key: key, text: text, required: required,minLength:minLength,maxLength:maxLength});
         return res.status(200).send("Success Slider Question");
     }
     else {
