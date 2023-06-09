@@ -116,12 +116,12 @@ const getnextQues = async (req, res) => {
       
       // console.log(resp.data.choices[0].message.content);
       const response = JSON.parse(resp.data.choices[0].message.content);
-      if(response.length === 0)
+      if(Object.keys(response).length === 0)
       {
         //  console.log("Not modified");
          res.status(200).json({modifiedQues:curr.text});
       }
-      else res.status(200).json({modifiedQues:response});
+      else res.status(200).json({modifiedQues:response.text});
       
     } catch (error) {
       res.send(error);
