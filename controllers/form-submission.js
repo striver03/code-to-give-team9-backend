@@ -18,13 +18,11 @@ const submitResponse = async (req,res) => {
         const docRef = formCollection.doc(formID);
         const snapshot = await docRef.get();
         let submissionDocRef;
-        if(snapshot.data()['isVolunteer'])
-        {
+        if(snapshot.data()['isVolunteer']) {
             const newDoc = await volunteerSubmissionCollection.add({});
             submissionDocRef = volunteerSubmissionCollection.doc(newDoc.id);
         }
-        else
-        {
+        else {
             const newDoc = await formSubmissionCollection.add({});
             submissionDocRef = formSubmissionCollection.doc(newDoc.id);
         }
@@ -36,9 +34,7 @@ const submitResponse = async (req,res) => {
             submissionDocRef.update(data);
         }
 
-
-        if(response.isBooked === true)
-        {
+        if(response.isBooked === "Yes") {
             await counsellingBookedCollection.add({submission:submissionDocRef});
         }
         await submissionDocRef.set({form: docRef}, {merge: true});

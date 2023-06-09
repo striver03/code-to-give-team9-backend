@@ -24,7 +24,7 @@ const getForm = async (req, res) => {
 const createForm = async (req, res) => {
     const {formName, createdBy,isVolunteer} = req.body;
 
-    if (!formName || !createdBy || isVolunteer===undefined) {
+    if (!formName || !createdBy || isVolunteer === undefined) {
       return res.status(400).json({error: 'Something is missing!'});
     }
 
