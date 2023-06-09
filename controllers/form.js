@@ -22,13 +22,13 @@ const getForm = async (req, res) => {
 };
 
 const createForm = async (req, res) => {
-    const { formName, createdBy} = req.body;
+    const {formName, createdBy,isVolunteer} = req.body;
 
-    if (!formName || !createdBy) {
+    if (!formName || !createdBy || isVolunteer===undefined) {
       return res.status(400).json({error: 'Something is missing!'});
     }
 
-    const docRef = await formCollection.add({ createdBy: createdBy, formName: formName});
+    const docRef = await formCollection.add({ createdBy: createdBy,formName: formName,isVolunteer:isVolunteer});
     const formID = docRef.id;
     writeFileSync('./local/formID.txt', formID);
 
