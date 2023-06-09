@@ -20,7 +20,7 @@ const submitResponse = async (req,res) => {
             // console.log(key,value);
             const data = {};
             data[key] = value;
-            formSubmissionCollection.doc(submissionID).update(data, {merge: true});
+            formSubmissionCollection.doc(submissionID).update(data);
         }
         await formSubmissionCollection.doc(submissionID).set({form: docRef}, {merge: true});
         res.status(200).json({msg: "Success Submission!"});

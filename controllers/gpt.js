@@ -5,44 +5,102 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 // const { baseQuestion, formQuestions } = require("../testing/data");
-let history = [];
+let history = [{role:"user",content:`I'm conducting a survey to analyze the behavior of drug addicted people in Kerala. The question can be of one of the following types - 
+1. Single-Correct Question:
+{
+"type": "single-correct",
+"text": "xyz",
+"options": ["optionA", "optionB", "optionC"]
+}
+
+Explanation: This is a single correct question where the respondent is expected to choose one option from the given options (optionA, optionB, optionC) as the correct answer.
+
+2. Multi-Correct Question:
+{
+"type": "multi-correct",
+"text": "xyz",
+"options": ["optionA", "optionB", "optionC"]
+}
+
+Explanation: This is a multi-correct question where the respondent is expected to choose one or more options from the given options (optionA, optionB, optionC) as the correct answers. Multiple options can be selected.
+
+3. Slider Question:
+{
+"type": "slider",
+"text": "xyz",
+"maxLength": xx,
+"minLength": yy
+}
+
+Explanation: This is a range question where the respondent is expected to provide a response within a specified range. The question (xyz) is accompanied by a slider that can be adjusted by the respondent. The response should fall between the minimum length (yy) and maximum length (xx) specified.
+
+4. Text Question:
+{
+"type": "text",
+"text": "xyz"
+}
+
+Explanation: This is a subjective question where the respondent is expected to provide a free-text response to the question (xyz). There are no predefined options or restrictions on the answer format, allowing the respondent to express their answer in their own words.
+
+There would also be a language parameter which denoted the language in which the question is to be modified.
+
+Now, I'll provide you with questions in the format stated above. Use the data about the user that you'll collect on the fly to modify the question and make it more personalize and relevant to the user. Make sure the modified question is relevant with the options (if any) and the type. The meaning of the statement should be same as the original question.
+
+Some examples of responses of the question are -
+
+If asked : "Have you been offered drugs by anyone?"
+The response should be the question integrated with the information of user that you know already. Like if you know the stress level of the user (which is high), you can modify the question as - "Based on your higher stress level, have you been offered drugs by anyone?"
+
+If asked: "How easy do you believe it is to access drugs in your local area?"
+If you know the locality of the user already, then try to integrate that information in the question. Like if you know the locality of user (which is Kunnar), you can modify the question as - "How easy do you believe is to access drugs in Kunnar?"
+
+In this manner, you should treat all the questions i.e. using the responses of past questions to personalize the current question.
+`}];
 
 
 const getnextQues = async (req, res) => {
-  let {text,type,options,maxScale,minScale,PrevResponse,PrevType} = req.body;
+  //The previous question and nect question fields will be custom (not including the key and the next and the options will
+  //be a simple array of strings)
+  let {text,type,options,minLength,maxLength,prevData,isModifiable} = req.body;
   //In the body we will get the current question (which tht gpt will change) and the response of the previous question
-
+  
   let curr = {text,type};
   if(type ==='slider')
   {
-    curr.minScale = minScale;
-    curr.maxScale = maxScale;
+    curr.minLength = minLength;
+    curr.maxLength = maxLength;
   }
-  else if(type === 'option')
+  else if(type === 'single-correct' || type === 'multi-correct')
   {
     curr.options = options
   }
-  else
+  else if(type!=="text")
   {
     return res.status(400).json({success:false,msg:"This is not a valid type of question!"});
   }
   
-  if(!PrevType || !PrevResponse)
+  if(!prevData) //when first question
   {
-    return res.status(200).send(curr);
+     return res.status(200).send({modifiedQues:curr.text});
   }
 
 
 
-  let prevRes = {type:PrevType,response:PrevResponse};
+  
   
   //Adding the prompt to add the previous question's reponse
-  let p = `I'm giving you the response of the user of the previous question. Analyze and store it in your memory and use that to make the questions more personalized for the user. Gather some information around the question and it's response to analyze the behavior of user which can then help to modify the question statement as close to user's mindset as possible. The response in JSON format is -${JSON.stringify(prevRes)}`;
+  let p = `I'm currently providing you the question with it's response by the user. Store it in your memory to make the questions asked in future more aligned to user's mindset. You don't need to modify this question, just collect the information about the user.
+        ${JSON.stringify(prevData)}`;
 
-  history.push({"role":"user","content": p});
-
+  history.push({role:"user",content: p});
+  
+  if(!isModifiable) //doing it here because the previous question and its response will be stored none the less
+  {
+    return res.status(200).send({modifiedQues:curr.text});
+  }
 
   let prompt = getQuesPrompt(curr);
+
     history.push({
       role: "user",
       content: prompt,
@@ -52,71 +110,27 @@ const getnextQues = async (req, res) => {
       const resp = await openai.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages: history,
-        // temperature: 0.2,
+        temperature: 0.7,
         // max_tokens:1000,
       });
-      let newQues = JSON.parse(resp.data.choices[0].message.content);
-      res.status(200).json({modifiedQues:newQues.text});
+      
+      // console.log(resp.data.choices[0].message.content);
+      const response = JSON.parse(resp.data.choices[0].message.content);
+      if(response.length === 0)
+      {
+        //  console.log("Not modified");
+         res.status(200).json({modifiedQues:curr.text});
+      }
+      else res.status(200).json({modifiedQues:response});
       
     } catch (error) {
       res.send(error);
     }
 };
 
-
-const storeBaseInfo = async (req, res) => {
-  let {baseQues} = req.body;
-  /*
-   The body should contain an array of base question in the format:-
-   [
-  {
-    text: "What is your name?",
-    type: "text",
-    response : "Abhay"
-  },
-  {
-    text: "What is your age?",
-    type: "option",
-    option: ["under 18", "18 to 25", "25 to 40", "above 40"],
-    response : 1
-  },
-  {
-    text: "What is your locality?",
-    type: "option",
-    option: ["Munnar", "Kochi", "Wayanad"],
-    response : 2
-  },
-  {
-    text : "Are you addicted to drugs?",
-    type : "option",
-    option:["yes","no"],
-    response : 0
-  },
-  {
-    text : "For whom are you fillisng this survey?",
-    type : "option",
-    option:["loved one","mySelf"],
-    response : 1   
-  }
-];
-  */
-  history.push(...getPromptBase(baseQues));
-  res.status(200).json({success:true,msg:"Base Questions, along with their responses has been acquired"})
-};
-
-const getPromptBase = (baseQuestion) => {
-  let prompt1 =
-    `Below are some questions that have been asked from a person who is filling a survey for itself or on behalf of some other person. Kindly look at the responses and the questions that have been asked from the user to get a perspective about the user.Now the questions are in an array , and the array is having objects at each index and these objects are nothing but the questions that have been asked. Each question has a text : which is the question that was asked , a field namely type : this represents the type of question as there can be three types of questions ie, 1)Option type which are the multiple choice questions , 2)Slider one (having a range between the max and the min scale , with the meaning of the scale defined in the question itself) , 3)the text type , which is a subjective question. After these there is a response which corresponds to the answer of the user , in case of option type question the response will be a numeric value which represents the value in the index(which is the number in response) of the option for that question , in the slider it is a numeric value between the max and the min scale and in the text type it is a textual response. The questions are given as ${JSON.stringify(baseQuestion)}`;
-  
-    let prompt2 = `In the upcoming questions that I'll ask, use the data about the user you've collected so far and try to put it in the question to modify and align it to the user's mindset as close as possible. For example - If you know the stress level of the user from the responses you get by going through the questions, and the next question asked is - have you been offered drugs by your peers, then try to integrate the stress level into this question as respond something like - Based on your higher stress level, have you ever been offered drugs by your peers? This information will help us know your social circle better.
-    So just remember this type of pattern everytime you modify/personalize the question.`
-  
-    return [{"role":"user","content":prompt1},{"role":"user","content":prompt2}];
-};
-
 const getQuesPrompt = (curr) => {
-  let prompt = `I'm giving you the question in JSON format. Your response should only be the question in JSON format which is personalized wrt to the user's data collected. The question should be framed keeping in mind the type and options (if any) of the actual question. Please don't respond any extra statement. The question in JSON format is - ${JSON.stringify(curr)}`;
+  let prompt = `I'm giving you the question in JSON format. Based on the things you know about the user, personalize the question and return that in JSON format. Make sure you do not change the pronounce and context of the question. The question should be framed keeping in mind the type and options (if any) of the actual question and should not change the context of the actual question. The question in JSON format is and give the resonse in the similar format (keep options same though)-  ${JSON.stringify(curr)}`;
   return prompt;
 };
 
-module.exports = {getnextQues,storeBaseInfo};
+module.exports = {getnextQues};
