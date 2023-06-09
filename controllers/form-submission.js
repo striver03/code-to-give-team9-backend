@@ -2,6 +2,9 @@ const db = require('../db/connect');
 // const {readFileSync,writeFileSync} = require('fs');
 const formCollection = db.collection('forms');
 const formSubmissionCollection = db.collection('form-submissions');
+const volunteerSubmissionCollection = db.collection('volunteer-submissions');
+const counsellingBookedCollection = db.collection('counselling-booked');
+
 
 const submitResponse = async (req,res) => {
     const {formID} = req.query;
@@ -12,17 +15,33 @@ const submitResponse = async (req,res) => {
     }
 
     try {
-        const newDoc = await formSubmissionCollection.add({});
-        const submissionID = newDoc.id;
         const docRef = formCollection.doc(formID);
+        const snapshot = await docRef.get();
+        let submissionDocRef;
+        if(snapshot.data()['isVolunteer'])
+        {
+            const newDoc = await volunteerSubmissionCollection.add({});
+            submissionDocRef = volunteerSubmissionCollection.doc(newDoc.id);
+        }
+        else
+        {
+            const newDoc = await formSubmissionCollection.add({});
+            submissionDocRef = formSubmissionCollection.doc(newDoc.id);
+        }
+
         for (const key in response) {
             const value = response[key];
-            // console.log(key,value);
             const data = {};
             data[key] = value;
-            formSubmissionCollection.doc(submissionID).update(data, {merge: true});
+            submissionDocRef.update(data);
         }
-        await formSubmissionCollection.doc(submissionID).set({form: docRef}, {merge: true});
+
+
+        if(response.isBooked === true)
+        {
+            await counsellingBookedCollection.add({submission:submissionDocRef});
+        }
+        await submissionDocRef.set({form: docRef}, {merge: true});
         res.status(200).json({msg: "Success Submission!"});
     } catch (error) {
         console.log(error);
