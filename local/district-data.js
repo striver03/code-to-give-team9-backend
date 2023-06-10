@@ -57,4 +57,5 @@ const districts = [
   },
 ];
 
-module.exports = districts;
+// module.exports = districts;
+export default districts;

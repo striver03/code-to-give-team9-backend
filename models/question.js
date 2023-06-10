@@ -118,4 +118,5 @@ class RangeQuestion extends Question {
   }
 }
 
-module.exports = { TextQuestion, OptionQuestion, RangeQuestion };
+// module.exports = { TextQuestion, OptionQuestion, RangeQuestion };
+export { TextQuestion, OptionQuestion, RangeQuestion };

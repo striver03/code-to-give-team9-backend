@@ -1,4 +1,5 @@
-const db = require('../db/connect');
+// const db = require('../db/connect');
+import db from "../db/connect.js";
 
 const submitQuestion = async (req,res) => {
     const {formID} = req.query;
@@ -35,4 +36,5 @@ const submitQuestion = async (req,res) => {
     return res.status(200).json({msg: "Submit Question Collection"});
 }
 
-module.exports = submitQuestion;
+// module.exports = submitQuestion;
+export {submitQuestion};

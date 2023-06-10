@@ -1,17 +1,30 @@
-const express = require("express");
+// const express = require("express");
+import express from "express";
+
 const app = express();
-const cors = require("cors");
-var winston = require("winston"),
-  expressWinston = require("express-winston");
+// const cors = require("cors");
+import cors from "cors";
+// var winston = require("winston")
+import winston from "winston";
+// expressWinston = require("express-winston");
+import expressWinston from "express-winston";
 
 app.use(cors());
 app.use(express.json());
 
-const gptRouter = require("./routes/gpt");
-const formRouter = require("./routes/form");
-const questionRouter = require("./routes/question");
-const submitRouter = require("./routes/form-submission");
-const analyticsRouter = require("./routes/data-analytics");
+// const gptRouter = require("./routes/gpt");
+import gptRouter from "./routes/gpt.js";
+// const formRouter = require("./routes/form");
+import formRouter from "./routes/form.js";
+// const questionRouter = require("./routes/question");
+import questionRouter from "./routes/question.js"
+// const submitRouter = require("./routes/form-submission");
+import submitRouter from "./routes/form-submission.js";
+// const analyticsRouter = require("./routes/data-analytics");
+import analyticsRouter from "./routes/data-analytics.js";
+// const translateRouter = require('./routes/translation');
+import translateRouter from './routes/translation.js';
+
 
 app.use(
   expressWinston.logger({
@@ -35,6 +48,7 @@ app.use("/question", questionRouter);
 app.use("/submit", submitRouter);
 app.use("/gpt", gptRouter);
 app.use("/analytics", analyticsRouter);
+app.use("/translate",translateRouter);
 
 const port = process.env.PORT || 3000;
 

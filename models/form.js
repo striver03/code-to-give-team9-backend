@@ -1,5 +1,8 @@
-const db = require("../db/connect");
-const { FormDoesNotExistError } = require("./errors/form");
+// const db = require("../db/connect");
+import db from "../db/connect.js";
+
+// const { FormDoesNotExistError } = require("./errors/form");
+import {FormDoesNotExistError} from "./errors/form.js";
 
 /*
 Model for the form object
@@ -88,4 +91,5 @@ class FormDao {
   }
 }
 
-module.exports = { Form, FormDao };
+// module.exports = { Form, FormDao };
+export {Form,FormDao};

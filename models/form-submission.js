@@ -1,7 +1,8 @@
 // type formSubmission = { [string]: number|string|boolean|Array<number|string|boolean> }
 // Make this a JS Doc comment
 
-const db = require("../db/connect");
+// const db = require("../db/connect");
+import db from "../db/connect.js";
 
 class FormSubmissionDao {
   static async find(params) {
@@ -24,4 +25,5 @@ class FormSubmissionDao {
   }
 }
 
-module.exports = { FormSubmissionDao };
+// module.exports = { FormSubmissionDao };
+export {FormSubmissionDao};

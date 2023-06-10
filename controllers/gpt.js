@@ -1,4 +1,5 @@
-const { Configuration, OpenAIApi } = require("openai");
+// const { Configuration, OpenAIApi } = require("openai");
+import { Configuration, OpenAIApi } from "openai";
 const configuration = new Configuration({
   // apiKey: process.env.OPENAI,
   apiKey : "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"
@@ -116,15 +117,17 @@ const getnextQues = async (req, res) => {
       
       // console.log(resp.data.choices[0].message.content);
       const response = JSON.parse(resp.data.choices[0].message.content);
-      if(Object.keys(response).length === 0)
+      // if(Object.keys(response).length === 0)
+      if(Object.values(response).length === 0 && response.constructor === Object)
       {
-        //  console.log("Not modified");
          res.status(200).json({modifiedQues:curr.text});
       }
       else res.status(200).json({modifiedQues:response.text});
       
     } catch (error) {
-      res.send(error);
+      // res.send(error);
+      console.log(error);
+      res.status(200).json({modifiedQues:curr.text});
     }
 };
 
@@ -133,4 +136,5 @@ const getQuesPrompt = (curr) => {
   return prompt;
 };
 
-module.exports = {getnextQues};
+// module.exports = {getnextQues};
+export {getnextQues};

@@ -1,4 +1,5 @@
-const db = require('../db/connect');
+// const db = require('../db/connect');
+import db from "../db/connect.js";
 // const {readFileSync,writeFileSync} = require('fs');
 const formCollection = db.collection('forms');
 const formSubmissionCollection = db.collection('form-submissions');
@@ -45,4 +46,5 @@ const submitResponse = async (req,res) => {
     }
 }
 
-module.exports = {submitResponse};
+// module.exports = {submitResponse};
+export {submitResponse};

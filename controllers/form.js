@@ -1,4 +1,5 @@
-const db = require('../db/connect');
+// const db = require('../db/connect');
+import db from "../db/connect.js";
 const formCollection = db.collection('forms');
 
 const getForm = async (req, res) => {
@@ -38,4 +39,5 @@ const createForm = (req, res) => {
   return res.status(200).json({msg: `Form created`});
 }
 
-module.exports = {getForm, createForm};
+// module.exports = {getForm, createForm};
+export {getForm,createForm};

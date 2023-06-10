@@ -6,6 +6,7 @@ const mapToObject = (map) => {
   return obj;
 };
 
-module.exports = {
-  mapToObjet: mapToObject,
-};
+// module.exports = {
+//   mapToObjet: mapToObject,
+// };
+export {mapToObject};

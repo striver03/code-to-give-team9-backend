@@ -1,9 +1,14 @@
 // @ts-check
-const express = require("express");
-const districts = require("../local/district-data");
+// const express = require("express");
+import express from "express";
+// const districts = require("../local/district-data");
+// import districts from "../local/district-data.js";
 const router = express.Router();
-const { FormSubmissionDao } = require("../models/form-submission");
-const { mapToObjet } = require("../utils/map");
+// const { FormSubmissionDao } = require("../models/form-submission");
+import {FormSubmissionDao} from "../models/form-submission.js";
+
+// const { mapToObject } = require("../utils/map");
+import {mapToObject} from "../utils/map.js";
 
 router.get("/dashboard", async (req, res) => {
   let { district } = req.query;
@@ -61,11 +66,12 @@ router.get("/dashboard", async (req, res) => {
   res.json({
     count: submissions.length,
     district: district || "All",
-    ageGroups: mapToObjet(ageGroups),
-    substanceAbuseCounts: mapToObjet(substanceAbuseCounts),
-    stressCounts: mapToObjet(stressCounts),
+    ageGroups: mapToObject(ageGroups),
+    substanceAbuseCounts: mapToObject(substanceAbuseCounts),
+    stressCounts: mapToObject(stressCounts),
     avgStress,
   });
 });
 
-module.exports = router;
+// module.exports = router;
+export default router;
