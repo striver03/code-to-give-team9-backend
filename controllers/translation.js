@@ -5,10 +5,9 @@ translate.key = "trnsl.1.1.20230610T101022Z.df0eadfa9b801c0f.644b09efaca21b50d5c
 
 const getTranlatedQuestion = async (req,res)=>{
     const {text,language} = req.body;
-    // const text = "My name is Abhay";
     try {
-        const malayalamText = await translate(text, { to: language });
-        res.status(200).send({tranlatedTxt:malayalamText});
+        const translatedText = await translate(text, { to: language });
+        res.status(200).send({tranlatedTxt:translatedText});
     } catch (error) {
         console.log(error);
         res.send(error)
