@@ -21,9 +21,9 @@ const getForm = async (req, res) => {
 
 const createForm = (req, res) => {
   const {formID} = req.query;
-  const {formName, createdBy,isVolunteer} = req.body;
+  const {formName, createdBy, isVolunteer, isDraft} = req.body;
 
-  if (!formName || !createdBy || isVolunteer === undefined) {
+  if (!formName || !createdBy || isVolunteer === undefined || isDraft === undefined) {
     return res.status(400).json({error: 'Something is missing!'});
   }
 
@@ -31,7 +31,8 @@ const createForm = (req, res) => {
   formDocRef.set({
     createdBy: createdBy,
     formName: formName,
-    isVolunteer:isVolunteer
+    isVolunteer: isVolunteer,
+    isDraft: isDraft
   });
 
   return res.status(200).json({msg: `Form created`});
