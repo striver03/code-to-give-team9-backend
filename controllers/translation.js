@@ -7,7 +7,7 @@ const getTranlatedQuestion = async (req,res)=>{
     const {text,language} = req.body;
     try {
         const translatedText = await translate(text, { to: language });
-        res.status(200).send({tranlatedTxt:translatedText});
+        res.status(200).send({translatedText});
     } catch (error) {
         console.log(error);
         res.send(error)
