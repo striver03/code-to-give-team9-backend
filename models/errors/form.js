@@ -8,6 +8,7 @@ class FormDoesNotExistError {
   }
 }
 
-module.exports = {
-  FormDoesNotExistError,
-};
+// module.exports = {
+//   FormDoesNotExistError,
+// };
+export {FormDoesNotExistError};

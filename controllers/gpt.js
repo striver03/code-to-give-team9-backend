@@ -1,4 +1,5 @@
-const { Configuration, OpenAIApi } = require("openai");
+// const { Configuration, OpenAIApi } = require("openai");
+import { Configuration, OpenAIApi } from "openai";
 const configuration = new Configuration({
   // apiKey: process.env.OPENAI,
   apiKey : "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"
@@ -135,4 +136,5 @@ const getQuesPrompt = (curr) => {
   return prompt;
 };
 
-module.exports = {getnextQues};
+// module.exports = {getnextQues};
+export {getnextQues};

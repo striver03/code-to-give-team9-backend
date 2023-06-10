@@ -1,4 +1,4 @@
-const express = require('express');
+import express from "express";
 const router = express.Router();
 
 const {
@@ -13,4 +13,5 @@ router.route('/').get(getAllUsersData);
 router.route('/create').post(addUserData);
 router.route('/:id').get(getUserData).patch(updateUserData).delete(deleteUserData);
 
-module.exports = router;
+// module.exports = router;
+export default router;
