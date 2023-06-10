@@ -6,9 +6,7 @@ import admin from "firebase-admin";
 
 // const serviceAccount = require('../serviceAccountKey.json');
 // const serviceAccount = process.env.serviceAccountKey;
-import serviceAccount from "../serviceAccountKey.json" assert {type:'json'};
-
-import { assert } from "console";
+import serviceAccount from '../serviceAccountKey.json' assert {type:'json'};
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)

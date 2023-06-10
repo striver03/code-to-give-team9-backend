@@ -6,7 +6,6 @@ const getForm = async (req, res) => {
     const {formID} = req.query;
     const snapshot = await formCollection.doc(formID).get();
     const startPath = snapshot.data().start;
-    console.log(startPath);
 
     if (!formID) {
         return res.status(400).json({error: 'Missing formID'});
