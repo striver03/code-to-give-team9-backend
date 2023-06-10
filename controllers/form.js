@@ -1,5 +1,3 @@
-const {writeFileSync} = require('fs')
-
 const db = require('../db/connect');
 const formCollection = db.collection('forms');
 
@@ -21,18 +19,22 @@ const getForm = async (req, res) => {
       });
 };
 
-const createForm = async (req, res) => {
-    const {formName, createdBy,isVolunteer} = req.body;
+const createForm = (req, res) => {
+  const {formID} = req.query;
+  const {formName, createdBy,isVolunteer} = req.body;
 
-    if (!formName || !createdBy || isVolunteer === undefined) {
-      return res.status(400).json({error: 'Something is missing!'});
-    }
-
-    const docRef = await formCollection.add({ createdBy: createdBy,formName: formName,isVolunteer:isVolunteer});
-    const formID = docRef.id;
-    writeFileSync('./local/formID.txt', formID);
-
-    res.status(200).json({msg: `Form created with ID: ${formID}`});
+  if (!formName || !createdBy || isVolunteer === undefined) {
+    return res.status(400).json({error: 'Something is missing!'});
   }
+
+  const formDocRef = formCollection.doc(`${formID}`);
+  formDocRef.set({
+    createdBy: createdBy,
+    formName: formName,
+    isVolunteer:isVolunteer
+  });
+
+  return res.status(200).json({msg: `Form created`});
+}
 
 module.exports = {getForm, createForm};
