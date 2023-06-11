@@ -16,7 +16,9 @@ const getForm = async (req, res) => {
     .then((querySnapshot) => {
         const docs = querySnapshot.docs.map(doc => doc.data());
         res.status(200).json({docs,startPath});
-      });
+      }).catch((error)=>{
+        res.send("Could not fetch due to error : "+error);
+      })
 };
 
 const createForm = (req, res) => {

@@ -23,6 +23,8 @@ import submitRouter from "./routes/form-submission.js";
 // const translateRouter = require('./routes/translation');
 import translateRouter from './routes/translation.js';
 import analyticsRouter from "./routes/analytics.js";
+import counsellingRouter from "./routes/counselling.js";
+import volunteerRouter from "./routes/volunteer.js";
 
 
 app.use(
@@ -48,6 +50,8 @@ app.use("/submit", submitRouter);
 app.use("/gpt", gptRouter);
 app.use("/analytics", analyticsRouter);
 app.use("/translate",translateRouter);
+app.use("/counselling",counsellingRouter);
+app.use("/volunteer",volunteerRouter);
 
 
 const port = process.env.PORT || 3000;
