@@ -11,7 +11,7 @@ export const myDistMap = {
     ageGroup: [
       { category: "Below 18", bar: 0, color: "#661515" },
       { category: "18-20", bar: 0, color: "#00C49F" },
-      { category: "21-24", bar: 0, color: "#FFBB28" },
-      { category: "24+", bar: 0, color: "#FF8042" },
+      { category: "21-23", bar: 0, color: "#FFBB28" },
+      { category: "24 and above", bar: 0, color: "#FF8042" },
     ]
   };
