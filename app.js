@@ -20,10 +20,9 @@ import formRouter from "./routes/form.js";
 import questionRouter from "./routes/question.js"
 // const submitRouter = require("./routes/form-submission");
 import submitRouter from "./routes/form-submission.js";
-// const analyticsRouter = require("./routes/data-analytics");
-import analyticsRouter from "./routes/data-analytics.js";
 // const translateRouter = require('./routes/translation');
 import translateRouter from './routes/translation.js';
+import analyticsRouter from "./routes/analytics.js";
 
 
 app.use(
@@ -49,6 +48,7 @@ app.use("/submit", submitRouter);
 app.use("/gpt", gptRouter);
 app.use("/analytics", analyticsRouter);
 app.use("/translate",translateRouter);
+
 
 const port = process.env.PORT || 3000;
 

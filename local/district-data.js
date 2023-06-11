@@ -57,5 +57,21 @@ const districts = [
   },
 ];
 
+const distArr = [
+  "Alappuzha",
+  "Ernakulam",
+  "Idukki",
+  "Kannur",
+  "Kasaragod",
+  "Kollam",
+  "Kottayam",
+  "Kozhikode",
+  "Malappuram",
+  "Palakkad",
+  "Pattanamtitta",
+  "Thiruvananthapuram",
+  "Thrissur",
+  "Wayanad",
+];
 // module.exports = districts;
-export default districts;
+export {districts,distArr};
